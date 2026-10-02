@@ -1,0 +1,62 @@
+// =====================================================================
+//  App > Formulas  (replace the whole Formulas property with this)
+//  Data sources required: SharePoint lists "migration" and "WaveSettings"
+// =====================================================================
+
+// ---------------- Identity ----------------
+nfMe = Lower(User().Email);
+
+// ---------------- Admins ------------------
+// Only these people see the Admin button and can open the admin screens.
+nfAdmins  = ["admin1@contoso.com", "admin2@contoso.com"];
+nfIsAdmin = nfMe in nfAdmins;
+
+// ---------------- Tenant ------------------
+// Used only when SharePointURL is still empty: site URL = root + SecurityGroup
+nfSiteRoot = "https://contoso.sharepoint.com/sites/";
+
+// ---------------- Wave visibility (list: WaveSettings) ----------------
+// Columns: Title (text), WaveNumber (single line text - same values as migration.Wave), IsActive (Yes/No)
+// Row WaveNumber = "ALL"  -> the "show all waves" master switch
+// Other rows              -> one per wave, IsActive = owners can see it
+// Empty list = show everything (safe default until an admin configures it)
+nfShowAllWaves  = IsEmpty(WaveSettings) || Coalesce(LookUp(WaveSettings, WaveNumber = "ALL").IsActive, false);
+nfActiveWaves   = Filter(WaveSettings, WaveNumber <> "ALL" && IsActive = true);
+nfActiveWaveText =
+    If(
+        nfShowAllWaves, "All waves",
+        CountRows(nfActiveWaves) = 0, "No waves",
+        Concat(Sort(nfActiveWaves, WaveNumber), WaveNumber, ", ")
+    );
+
+// ---------------- Data --------------------
+// File shares the signed-in user owns, limited to open waves.
+// Search() is delegable on SharePoint text columns; the wave filter runs on the
+// (small) owner-scoped result so the blue delegation underline is harmless.
+// Wave and WaveNumber are both single line text, so values must match exactly (e.g. "1").
+nfMySites =
+    Sort(
+        Filter(
+            Search(migration, nfMe, OwnersEmail) As m,
+            nfShowAllWaves || !IsBlank(LookUp(nfActiveWaves, WaveNumber = m.Wave))
+        ),
+        Wave
+    );
+
+// ---------------- Status pipeline (order shown on the Progress page) ----------------
+nfStatuses = ["Site Created", "T-14", "T-7", "T-1", "Site Migrated", "T+1", "T+14", "T+28"];
+
+// ---------------- Palette -----------------
+nfPrimary     = RGBA(79, 70, 229, 1);     // indigo
+nfAccent      = RGBA(219, 39, 119, 1);    // pink
+nfSuccess     = RGBA(22, 163, 74, 1);
+nfSuccessText = RGBA(21, 128, 61, 1);
+nfWarning     = RGBA(245, 158, 11, 1);
+nfWarningBg   = RGBA(255, 251, 235, 1);
+nfWarningText = RGBA(146, 64, 14, 1);
+nfDanger      = RGBA(220, 38, 38, 1);
+nfInk         = RGBA(17, 24, 39, 1);
+nfMuted       = RGBA(107, 114, 128, 1);
+nfLine        = RGBA(229, 231, 235, 1);
+nfPageBg      = RGBA(244, 245, 251, 1);
+nfWhite       = RGBA(255, 255, 255, 1);
