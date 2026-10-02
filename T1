@@ -1,0 +1,2374 @@
+# =====================================================================
+#  Migration Hub - 3 screens, Source Code schema (pa.yaml v3)
+#    scrMigration      owner view: confirm / override destination site
+#    scrAdminWaves     admin: open / close waves for owners
+#    scrAdminProgress  admin: metrics + status pipeline
+#
+#  Paste: select "App" at the top of the tree view, Ctrl+V (creates all 3
+#  screens). Delete or rename any older scrMigration first.
+#  Fallback: create 3 blank screens and paste each screen's Children block.
+#
+#  Prereqs: data sources "migration" + "WaveSettings"; App.Formulas.txt pasted.
+#  New list WaveSettings = Title, WaveNumber (single line text), IsActive (Yes/No).
+# =====================================================================
+Screens:
+
+  # ===================================================================
+  #  OWNER SCREEN
+  # ===================================================================
+  scrMigration:
+    Properties:
+      Fill: =nfPageBg
+    Children:
+      - conPage:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =nfPageBg
+            BorderThickness: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutJustifyContent: =LayoutJustifyContent.Start
+            LayoutGap: =0
+          Children:
+
+            # ---------------- Top bar ----------------
+            - conTopBar:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =64
+                  Fill: =nfWhite
+                  BorderThickness: =0
+                  DropShadow: =DropShadow.Light
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =16
+                  PaddingLeft: =24
+                  PaddingRight: =24
+                Children:
+                  - conBrand:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =12
+                      Children:
+                        - imgLogo:
+                            Control: Image
+                            Properties:
+                              FillPortions: =0
+                              Width: =36
+                              Height: =36
+                              ImagePosition: =ImagePosition.Fit
+                              Image: |-
+                                ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#4F46E5'/><stop offset='1' stop-color='#DB2777'/></linearGradient></defs><rect width='36' height='36' rx='10' fill='url(#g)'/><path d='M9 12.5h7l2 2.5h9v9.5H9z' fill='none' stroke='#FFFFFF' stroke-width='1.8' stroke-linejoin='round'/><path d='M18 23v-5.5M15.5 20l2.5-2.5 2.5 2.5' fill='none' stroke='#FFFFFF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>")
+                        - conBrandText:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =0
+                            Children:
+                              - txtBrand:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =20
+                                    Text: ="Migration Hub"
+                                    Size: =15
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Wrap: =false
+                              - txtBrandSub:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="File share migration · owner confirmation"
+                                    Size: =11
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                  - btnAdmin:
+                      Control: Button
+                      Properties:
+                        FillPortions: =0
+                        Width: =110
+                        Height: =36
+                        Visible: =nfIsAdmin
+                        Text: ="Admin"
+                        Appearance: ='ButtonCanvas.Appearance'.Secondary
+                        Layout: ='ButtonCanvas.Layout'.IconBefore
+                        Icon: ="Settings"
+                        BasePaletteColor: =nfPrimary
+                        OnSelect: =Navigate(scrAdminWaves)
+                  - conUserChip:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Width: =240
+                        Height: =44
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.End
+                        LayoutGap: =10
+                      Children:
+                        - conChipText:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =0
+                            Children:
+                              - txtChipName:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =18
+                                    Text: =User().FullName
+                                    Size: =13
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Align: ='TextCanvas.Align'.End
+                                    Wrap: =false
+                              - txtChipEmail:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: =User().Email
+                                    Size: =11
+                                    FontColor: =nfMuted
+                                    Align: ='TextCanvas.Align'.End
+                                    Wrap: =false
+                        - conAvatar:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =36
+                              Height: =36
+                              Fill: =nfPrimary
+                              BorderThickness: =0
+                              RadiusTopLeft: =18
+                              RadiusTopRight: =18
+                              RadiusBottomLeft: =18
+                              RadiusBottomRight: =18
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtInitials:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: =Upper(Left(User().FullName, 1) & Left(Last(Split(User().FullName, " ")).Value, 1))
+                                    Size: =13
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfWhite
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+
+            # ---------------- Body ----------------
+            - conBody:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =1
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =12
+                  PaddingLeft: =48
+                  PaddingRight: =48
+                  PaddingTop: =28
+                  PaddingBottom: =24
+                Children:
+                  - conHero:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =72
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =16
+                      Children:
+                        - conHeroText:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =4
+                            Children:
+                              - txtTitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =36
+                                    Text: ="Destination site confirmation"
+                                    Size: =26
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    FontColor: =nfInk
+                                    Wrap: =false
+                              - txtSubtitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =22
+                                    Text: ="Hi " & User().FullName & " — review each file share you own and confirm where it should land in SharePoint."
+                                    Size: =14
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                        - pillOpenWaves:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =260
+                              Height: =32
+                              AlignInContainer: =AlignInContainer.Center
+                              Fill: =RGBA(79, 70, 229, 0.12)
+                              BorderThickness: =0
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtOpenWaves:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: ="Open now · " & nfActiveWaveText
+                                    Size: =12
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfPrimary
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                  - conSectionHead:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =32
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =12
+                      Children:
+                        - txtSectionTitle:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Width: =180
+                              Height: =32
+                              Text: ="Your file shares"
+                              Size: =20
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfInk
+                              VerticalAlign: =VerticalAlign.Middle
+                              Wrap: =false
+                        - pillCount:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =140
+                              Height: =26
+                              AlignInContainer: =AlignInContainer.Center
+                              Fill: =RGBA(79, 70, 229, 0.12)
+                              BorderThickness: =0
+                              RadiusTopLeft: =13
+                              RadiusTopRight: =13
+                              RadiusBottomLeft: =13
+                              RadiusBottomRight: =13
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtCount:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: =CountRows(galSites.AllItems) & If(CountRows(galSites.AllItems) = 1, " file share", " file shares")
+                                    Size: =12
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfPrimary
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                  - txtSectionHint:
+                      Control: Text
+                      Properties:
+                        FillPortions: =0
+                        Height: =22
+                        Text: ="Confirm the auto-created site for each share, or point it to an existing site you own. Once one owner submits, the choice is locked for the other owners."
+                        Size: =13
+                        FontColor: =nfMuted
+                        Wrap: =false
+
+                  # ---------------- Gallery of owned shares ----------------
+                  - galSites:
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        FillPortions: =1
+                        Items: =nfMySites
+                        TemplateSize: =200
+                        TemplatePadding: =0
+                        ShowScrollbar: =false
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LoadingSpinner: =LoadingSpinner.Data
+                        LoadingSpinnerColor: =nfPrimary
+                      Children:
+                        - conCard:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              X: =4
+                              Y: =6
+                              Width: =Parent.TemplateWidth - 8
+                              Height: =Parent.TemplateHeight - 12
+                              Fill: =nfWhite
+                              BorderThickness: =0
+                              DropShadow: =DropShadow.Light
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =0
+                            Children:
+                              - conAccent:
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
+                                  Properties:
+                                    FillPortions: =0
+                                    Width: =8
+                                    Fill: =If(ThisItem.OwnerConfirmed, nfSuccess, nfWarning)
+                                    BorderThickness: =0
+                                    RadiusTopLeft: =16
+                                    RadiusBottomLeft: =16
+                                    RadiusTopRight: =0
+                                    RadiusBottomRight: =0
+                              - conInfo:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =1
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutGap: =8
+                                    PaddingLeft: =24
+                                    PaddingRight: =16
+                                    PaddingTop: =16
+                                    PaddingBottom: =16
+                                  Children:
+                                    - txtPath:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =28
+                                          Text: =ThisItem.FileSharePath
+                                          Size: =17
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: =nfInk
+                                          Wrap: =false
+                                    - conPills:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =28
+                                          Fill: =RGBA(0, 0, 0, 0)
+                                          BorderThickness: =0
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutJustifyContent: =LayoutJustifyContent.Start
+                                          LayoutGap: =8
+                                        Children:
+                                          - pillWave:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                FillPortions: =0
+                                                Width: =96
+                                                Fill: =RGBA(79, 70, 229, 0.12)
+                                                BorderThickness: =0
+                                                RadiusTopLeft: =14
+                                                RadiusTopRight: =14
+                                                RadiusBottomLeft: =14
+                                                RadiusBottomRight: =14
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutJustifyContent: =LayoutJustifyContent.Center
+                                              Children:
+                                                - txtWave:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =1
+                                                      Text: =ThisItem.Wave
+                                                      Size: =12
+                                                      Weight: ='TextCanvas.Weight'.Semibold
+                                                      FontColor: =nfPrimary
+                                                      Align: ='TextCanvas.Align'.Center
+                                                      VerticalAlign: =VerticalAlign.Middle
+                                                      Wrap: =false
+                                          - pillStatus:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                FillPortions: =0
+                                                Width: =236
+                                                Fill: =If(ThisItem.OwnerConfirmed, RGBA(22, 163, 74, 0.14), RGBA(245, 158, 11, 0.18))
+                                                BorderThickness: =0
+                                                RadiusTopLeft: =14
+                                                RadiusTopRight: =14
+                                                RadiusBottomLeft: =14
+                                                RadiusBottomRight: =14
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutJustifyContent: =LayoutJustifyContent.Center
+                                              Children:
+                                                - txtStatus:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =1
+                                                      Text: |-
+                                                        =If(
+                                                            ThisItem.OwnerConfirmed,
+                                                            If(
+                                                                Lower(Coalesce(ThisItem.ConfirmedByEmail, "")) = nfMe,
+                                                                "Confirmed by you",
+                                                                "Confirmed by " & ThisItem.ConfirmedBy
+                                                            ),
+                                                            "Awaiting your confirmation"
+                                                        )
+                                                      Size: =12
+                                                      Weight: ='TextCanvas.Weight'.Semibold
+                                                      FontColor: =If(ThisItem.OwnerConfirmed, nfSuccessText, nfWarningText)
+                                                      Align: ='TextCanvas.Align'.Center
+                                                      VerticalAlign: =VerticalAlign.Middle
+                                                      Wrap: =false
+                                          - txtOwners:
+                                              Control: Text
+                                              Properties:
+                                                FillPortions: =1
+                                                Text: ="Owners · " & Concat(ThisItem.Owners, DisplayName, ", ")
+                                                Size: =12
+                                                FontColor: =nfMuted
+                                                VerticalAlign: =VerticalAlign.Middle
+                                                Wrap: =false
+                                    - txtDestLabel:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =16
+                                          Text: ="DESTINATION SITE"
+                                          Size: =11
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: =nfMuted
+                                          Wrap: =false
+                                    - txtDestUrl:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =22
+                                          Text: =Coalesce(ThisItem.PreferredSharePointURL, ThisItem.SharePointURL, nfSiteRoot & ThisItem.SecurityGroup)
+                                          Size: =14
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: =nfPrimary
+                                          Wrap: =false
+                                    - txtDestNote:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =18
+                                          Text: |-
+                                            =If(
+                                                !IsBlank(ThisItem.PreferredSharePointURL),
+                                                "Owner-provided site · replaces the auto-created " & ThisItem.SharePointURL,
+                                                "Auto-created site · security group " & ThisItem.SecurityGroup
+                                            )
+                                          Size: =12
+                                          FontColor: =nfMuted
+                                          Wrap: =false
+                              - conActions:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =0
+                                    Width: =380
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutGap: =10
+                                    PaddingLeft: =8
+                                    PaddingRight: =24
+                                    PaddingTop: =16
+                                    PaddingBottom: =16
+                                  Children:
+                                    - conActionButtons:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =40
+                                          Visible: =!Coalesce(ThisItem.OwnerConfirmed, false)
+                                          Fill: =RGBA(0, 0, 0, 0)
+                                          BorderThickness: =0
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutJustifyContent: =LayoutJustifyContent.Start
+                                          LayoutGap: =10
+                                        Children:
+                                          - btnConfirmExisting:
+                                              Control: Button
+                                              Properties:
+                                                FillPortions: =0
+                                                Width: =168
+                                                Text: ="Confirm this site"
+                                                Appearance: ='ButtonCanvas.Appearance'.Primary
+                                                Layout: ='ButtonCanvas.Layout'.IconBefore
+                                                Icon: ="Checkmark"
+                                                BasePaletteColor: =nfPrimary
+                                                OnSelect: |-
+                                                  =Set(varChoice, "Existing");
+                                                  Set(varConfirmId, ThisItem.ID);
+                                                  Set(varConfirmPath, ThisItem.FileSharePath);
+                                                  Set(varTargetUrl, Coalesce(ThisItem.SharePointURL, nfSiteRoot & ThisItem.SecurityGroup));
+                                                  Set(varShowConfirm, true)
+                                          - btnUseOther:
+                                              Control: Button
+                                              Properties:
+                                                FillPortions: =0
+                                                Width: =164
+                                                Text: ="Use a different site"
+                                                Appearance: ='ButtonCanvas.Appearance'.Secondary
+                                                Layout: ='ButtonCanvas.Layout'.IconBefore
+                                                Icon: ="Edit"
+                                                BasePaletteColor: =nfPrimary
+                                                OnSelect: |-
+                                                  =Set(varChoice, "Preferred");
+                                                  Set(varConfirmId, ThisItem.ID);
+                                                  Set(varConfirmPath, ThisItem.FileSharePath);
+                                                  Set(varTargetUrl, Coalesce(ThisItem.SharePointURL, nfSiteRoot & ThisItem.SecurityGroup));
+                                                  Reset(txtPreferredUrl);
+                                                  Set(varShowConfirm, true)
+                                    - txtConfirmedMsg:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =64
+                                          Visible: =Coalesce(ThisItem.OwnerConfirmed, false)
+                                          Text: |-
+                                            =If(
+                                                Lower(Coalesce(ThisItem.ConfirmedByEmail, "")) = nfMe,
+                                                "You confirmed this selection on " & Text(ThisItem.ConfirmedOn, "mmm d, yyyy") & ".",
+                                                "Selection has been submitted by the other owner (" & ThisItem.ConfirmedBy & ") on the app on " & Text(ThisItem.ConfirmedOn, "mmm d, yyyy") & "."
+                                            )
+                                          Size: =13
+                                          FontColor: =nfInk
+                                          Wrap: =true
+                                    - btnChange:
+                                        Control: Button
+                                        Properties:
+                                          FillPortions: =0
+                                          Width: =160
+                                          Height: =32
+                                          AlignInContainer: =AlignInContainer.Start
+                                          Visible: =Coalesce(ThisItem.OwnerConfirmed, false) && Lower(Coalesce(ThisItem.ConfirmedByEmail, "")) = nfMe
+                                          Text: ="Change selection"
+                                          Appearance: ='ButtonCanvas.Appearance'.Subtle
+                                          Layout: ='ButtonCanvas.Layout'.IconBefore
+                                          Icon: ="ArrowUndo"
+                                          BasePaletteColor: =nfPrimary
+                                          OnSelect: |-
+                                            =Patch(
+                                                migration,
+                                                {ID: ThisItem.ID},
+                                                {
+                                                    OwnerConfirmed: false,
+                                                    PreferredSharePointURL: Blank(),
+                                                    ConfirmedBy: Blank(),
+                                                    ConfirmedByEmail: Blank(),
+                                                    ConfirmedOn: Blank()
+                                                }
+                                            );
+                                            Refresh(migration);
+                                            Notify("Your selection has been reopened — choose again when you're ready.", NotificationType.Information)
+                                    - btnOpenSite:
+                                        Control: Button
+                                        Properties:
+                                          FillPortions: =0
+                                          Width: =130
+                                          Height: =32
+                                          AlignInContainer: =AlignInContainer.Start
+                                          Text: ="Open site"
+                                          Appearance: ='ButtonCanvas.Appearance'.Subtle
+                                          Layout: ='ButtonCanvas.Layout'.IconBefore
+                                          Icon: ="Open"
+                                          BasePaletteColor: =nfPrimary
+                                          OnSelect: =Launch(Coalesce(ThisItem.PreferredSharePointURL, ThisItem.SharePointURL, nfSiteRoot & ThisItem.SecurityGroup))
+
+                  # ---------------- Empty state ----------------
+                  - conEmpty:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =150
+                        Visible: =CountRows(galSites.AllItems) = 0
+                        Fill: =nfWhite
+                        BorderThickness: =0
+                        DropShadow: =DropShadow.Light
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutGap: =8
+                        PaddingLeft: =32
+                        PaddingRight: =32
+                      Children:
+                        - txtEmptyTitle:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =28
+                              Text: ="Nothing to confirm right now"
+                              Size: =18
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfInk
+                              Wrap: =false
+                        - txtEmptyBody:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =44
+                              Text: ="Your file shares aren't in an open wave yet, or you're not listed as an owner. You'll get an email when your wave opens — if you think something's missing, contact the migration team."
+                              Size: =13
+                              FontColor: =nfMuted
+                              Wrap: =true
+
+      # ---------------- Confirmation dialog (overlay) ----------------
+      - conScrim:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Visible: =varShowConfirm
+            Fill: =RGBA(17, 24, 39, 0.55)
+            BorderThickness: =0
+          Children:
+            - conDialog:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+                  Width: =Min(560, Parent.Width - 32)
+                  Height: =500
+                  Fill: =nfWhite
+                  BorderThickness: =0
+                  DropShadow: =DropShadow.Bold
+                  RadiusTopLeft: =20
+                  RadiusTopRight: =20
+                  RadiusBottomLeft: =20
+                  RadiusBottomRight: =20
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =0
+                Children:
+                  - conDialogStrip:
+                      Control: GroupContainer
+                      Variant: ManualLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =8
+                        Fill: =If(varChoice = "Preferred", nfAccent, nfPrimary)
+                        BorderThickness: =0
+                        RadiusTopLeft: =20
+                        RadiusTopRight: =20
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                  - conDialogBody:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =8
+                        PaddingLeft: =36
+                        PaddingRight: =36
+                        PaddingTop: =28
+                        PaddingBottom: =8
+                      Children:
+                        - txtDialogEyebrow:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =18
+                              Text: =If(varChoice = "Preferred", "USE A DIFFERENT SITE", "CONFIRM DESTINATION")
+                              Size: =11
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =If(varChoice = "Preferred", nfAccent, nfPrimary)
+                              Wrap: =false
+                        - txtDialogTitle:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =34
+                              Text: =If(varChoice = "Preferred", "Point this file share to a site you own", "Confirm the auto-created site")
+                              Size: =22
+                              Weight: ='TextCanvas.Weight'.Bold
+                              FontColor: =nfInk
+                              Wrap: =false
+                        - txtDialogPathLabel:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =24
+                              PaddingTop: =8
+                              Text: ="FILE SHARE"
+                              Size: =11
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfMuted
+                              Wrap: =false
+                        - txtDialogPath:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =22
+                              Text: =varConfirmPath
+                              Size: =14
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfInk
+                              Wrap: =false
+                        - txtDialogUrlLabel:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =24
+                              PaddingTop: =8
+                              Text: =If(varChoice = "Preferred", "SHAREPOINT SITE URL YOU OWN", "DESTINATION SITE")
+                              Size: =11
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfMuted
+                              Wrap: =false
+                        - txtDialogUrl:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =44
+                              Visible: =varChoice = "Existing"
+                              Text: =varTargetUrl
+                              Size: =14
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfPrimary
+                              Wrap: =true
+                        - txtPreferredUrl:
+                            Control: TextInput
+                            Properties:
+                              FillPortions: =0
+                              Height: =40
+                              Visible: =varChoice = "Preferred"
+                              Value: =""
+                              Placeholder: ="https://contoso.sharepoint.com/sites/your-site"
+                        - txtUrlError:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =18
+                              Visible: |-
+                                =varChoice = "Preferred"
+                                && !IsBlank(txtPreferredUrl.Value)
+                                && !With(
+                                    {_u: Lower(Trim(txtPreferredUrl.Value))},
+                                    StartsWith(_u, "https://") && (".sharepoint.com/sites/" in _u || ".sharepoint.com/teams/" in _u)
+                                )
+                              Text: ="Enter the full site URL, e.g. https://contoso.sharepoint.com/sites/… or /teams/…"
+                              Size: =12
+                              FontColor: =nfDanger
+                              Wrap: =false
+                        - conWarning:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =112
+                              Fill: =nfWarningBg
+                              BorderColor: =nfWarning
+                              BorderThickness: =1
+                              RadiusTopLeft: =12
+                              RadiusTopRight: =12
+                              RadiusBottomLeft: =12
+                              RadiusBottomRight: =12
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =4
+                              PaddingLeft: =16
+                              PaddingRight: =16
+                              PaddingTop: =12
+                              PaddingBottom: =12
+                            Children:
+                              - txtWarnTitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =18
+                                    Text: ="Before you confirm"
+                                    Size: =12
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfWarningText
+                                    Wrap: =false
+                              - txtWarnBody:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: |-
+                                      =If(
+                                          varChoice = "Preferred",
+                                          "Are you sure you are the owner of the site you have provided, or have permission from the site owner to migrate this data to their site? Your confirmation is recorded with your name and today's date, and the other owners of this file share will see it.",
+                                          "Are you sure you are an owner of this site, or have permission from the site owner, to migrate this file share to it? Your confirmation is recorded with your name and today's date, and the other owners of this file share will see it."
+                                      )
+                                    Size: =13
+                                    FontColor: =nfWarningText
+                                    Wrap: =true
+                  - conDialogFooter:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =84
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.End
+                        LayoutGap: =12
+                        PaddingLeft: =36
+                        PaddingRight: =36
+                        PaddingTop: =16
+                        PaddingBottom: =28
+                      Children:
+                        - txtSaving:
+                            Control: Text
+                            Properties:
+                              FillPortions: =1
+                              Height: =40
+                              Visible: =varBusy
+                              Text: ="Saving your selection…"
+                              Size: =13
+                              FontColor: =nfMuted
+                              VerticalAlign: =VerticalAlign.Middle
+                              Wrap: =false
+                        - btnCancel:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =124
+                              Height: =40
+                              Text: ="Cancel"
+                              Appearance: ='ButtonCanvas.Appearance'.Secondary
+                              Layout: ='ButtonCanvas.Layout'.TextOnly
+                              DisplayMode: =If(varBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                              OnSelect: =Set(varShowConfirm, false)
+                        - btnConfirm:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =176
+                              Height: =40
+                              Text: ="Yes, I confirm"
+                              Appearance: ='ButtonCanvas.Appearance'.Primary
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="Checkmark"
+                              BasePaletteColor: =If(varChoice = "Preferred", nfAccent, nfPrimary)
+                              DisplayMode: |-
+                                =If(
+                                    varBusy,
+                                    DisplayMode.Disabled,
+                                    If(
+                                        varChoice = "Preferred",
+                                        If(
+                                            With(
+                                                {_u: Lower(Trim(txtPreferredUrl.Value))},
+                                                StartsWith(_u, "https://") && (".sharepoint.com/sites/" in _u || ".sharepoint.com/teams/" in _u)
+                                            ),
+                                            DisplayMode.Edit,
+                                            DisplayMode.Disabled
+                                        ),
+                                        DisplayMode.Edit
+                                    )
+                                )
+                              OnSelect: |-
+                                =Set(varBusy, true);
+                                With(
+                                    {
+                                        _url: If(varChoice = "Preferred", Trim(txtPreferredUrl.Value), varTargetUrl),
+                                        _latest: LookUp(migration, ID = varConfirmId)
+                                    },
+                                    If(
+                                        _latest.OwnerConfirmed && Lower(Coalesce(_latest.ConfirmedByEmail, "")) <> nfMe,
+                                        Notify("Selection has already been submitted by the other owner (" & _latest.ConfirmedBy & ").", NotificationType.Warning),
+                                        Patch(
+                                            migration,
+                                            {ID: varConfirmId},
+                                            {
+                                                PreferredSharePointURL: If(varChoice = "Preferred", _url, Blank()),
+                                                OwnerConfirmed: true,
+                                                ConfirmedBy: User().FullName,
+                                                ConfirmedByEmail: User().Email,
+                                                ConfirmedOn: Now()
+                                            }
+                                        );
+                                        Notify("Thanks — your selection for " & varConfirmPath & " has been recorded.", NotificationType.Success)
+                                    )
+                                );
+                                Refresh(migration);
+                                Set(varBusy, false);
+                                Set(varShowConfirm, false)
+
+  # ===================================================================
+  #  ADMIN - WAVE CONTROL
+  # ===================================================================
+  scrAdminWaves:
+    Properties:
+      Fill: =nfPageBg
+      OnVisible: =If(!nfIsAdmin, Navigate(scrMigration), ClearCollect(colMig, migration))
+    Children:
+      - conPageW:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =nfPageBg
+            BorderThickness: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutJustifyContent: =LayoutJustifyContent.Start
+            LayoutGap: =0
+          Children:
+
+            # ---------------- Top bar ----------------
+            - conTopBarW:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =64
+                  Fill: =nfWhite
+                  BorderThickness: =0
+                  DropShadow: =DropShadow.Light
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =16
+                  PaddingLeft: =24
+                  PaddingRight: =24
+                Children:
+                  - conBrandW:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Width: =280
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =12
+                      Children:
+                        - imgLogoW:
+                            Control: Image
+                            Properties:
+                              FillPortions: =0
+                              Width: =36
+                              Height: =36
+                              ImagePosition: =ImagePosition.Fit
+                              Image: |-
+                                ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#4F46E5'/><stop offset='1' stop-color='#DB2777'/></linearGradient></defs><rect width='36' height='36' rx='10' fill='url(#g)'/><path d='M9 12.5h7l2 2.5h9v9.5H9z' fill='none' stroke='#FFFFFF' stroke-width='1.8' stroke-linejoin='round'/><path d='M18 23v-5.5M15.5 20l2.5-2.5 2.5 2.5' fill='none' stroke='#FFFFFF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>")
+                        - conBrandTextW:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =0
+                            Children:
+                              - txtBrandW:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =20
+                                    Text: ="Migration Hub"
+                                    Size: =15
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Wrap: =false
+                              - txtBrandSubW:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="Admin console"
+                                    Size: =11
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                  - conTabsW:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutGap: =8
+                      Children:
+                        - btnTabWavesW:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =150
+                              Height: =36
+                              Text: ="Wave control"
+                              Appearance: ='ButtonCanvas.Appearance'.Primary
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="Filter"
+                              BasePaletteColor: =nfPrimary
+                        - btnTabProgressW:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =130
+                              Height: =36
+                              Text: ="Progress"
+                              Appearance: ='ButtonCanvas.Appearance'.Subtle
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="DocumentBulletList"
+                              BasePaletteColor: =nfPrimary
+                              OnSelect: =Navigate(scrAdminProgress)
+                  - btnOwnerViewW:
+                      Control: Button
+                      Properties:
+                        FillPortions: =0
+                        Width: =130
+                        Height: =36
+                        Text: ="Owner view"
+                        Appearance: ='ButtonCanvas.Appearance'.Secondary
+                        Layout: ='ButtonCanvas.Layout'.IconBefore
+                        Icon: ="Eye"
+                        BasePaletteColor: =nfPrimary
+                        OnSelect: =Navigate(scrMigration)
+                  - conUserChipW:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Width: =240
+                        Height: =44
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.End
+                        LayoutGap: =10
+                      Children:
+                        - conChipTextW:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =0
+                            Children:
+                              - txtChipNameW:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =18
+                                    Text: =User().FullName
+                                    Size: =13
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Align: ='TextCanvas.Align'.End
+                                    Wrap: =false
+                              - txtChipEmailW:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: =User().Email
+                                    Size: =11
+                                    FontColor: =nfMuted
+                                    Align: ='TextCanvas.Align'.End
+                                    Wrap: =false
+                        - conAvatarW:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =36
+                              Height: =36
+                              Fill: =nfPrimary
+                              BorderThickness: =0
+                              RadiusTopLeft: =18
+                              RadiusTopRight: =18
+                              RadiusBottomLeft: =18
+                              RadiusBottomRight: =18
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtInitialsW:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: =Upper(Left(User().FullName, 1) & Left(Last(Split(User().FullName, " ")).Value, 1))
+                                    Size: =13
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfWhite
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+
+            # ---------------- Body ----------------
+            - conBodyW:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =1
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =16
+                  PaddingLeft: =48
+                  PaddingRight: =48
+                  PaddingTop: =28
+                  PaddingBottom: =24
+                Children:
+                  - conVisibilityCard:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =150
+                        Fill: =nfWhite
+                        BorderThickness: =0
+                        DropShadow: =DropShadow.Light
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =24
+                        PaddingLeft: =28
+                        PaddingRight: =28
+                        PaddingTop: =20
+                        PaddingBottom: =20
+                      Children:
+                        - conVisText:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =6
+                            Children:
+                              - txtVisLabel:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="OWNERS CAN CURRENTLY SEE"
+                                    Size: =11
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                              - txtVisValue:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =36
+                                    Text: =nfActiveWaveText
+                                    Size: =26
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    FontColor: =If(nfShowAllWaves || CountRows(nfActiveWaves) > 0, nfPrimary, nfDanger)
+                                    Wrap: =false
+                              - txtVisHint:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =40
+                                    Text: ="Owners only see file shares in active waves. Activate a wave when its notification emails go out; deactivate it when the wave is done. Changes apply the next time an owner opens the app."
+                                    Size: =13
+                                    FontColor: =nfMuted
+                                    Wrap: =true
+                        - btnShowAll:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =240
+                              Height: =40
+                              Text: =If(nfShowAllWaves, "Switch to per-wave control", "Show all waves")
+                              Appearance: =If(nfShowAllWaves, 'ButtonCanvas.Appearance'.Secondary, 'ButtonCanvas.Appearance'.Primary)
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: =If(nfShowAllWaves, "Filter", "Eye")
+                              BasePaletteColor: =nfPrimary
+                              OnSelect: |-
+                                =With(
+                                    {_row: LookUp(WaveSettings, WaveNumber = "ALL")},
+                                    If(
+                                        IsBlank(_row),
+                                        Patch(WaveSettings, Defaults(WaveSettings), {Title: "All waves", WaveNumber: "ALL", IsActive: !nfShowAllWaves}),
+                                        Patch(WaveSettings, {ID: _row.ID}, {IsActive: !_row.IsActive})
+                                    )
+                                );
+                                Refresh(WaveSettings)
+                  - conWavesCard:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =nfWhite
+                        BorderThickness: =0
+                        DropShadow: =DropShadow.Light
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =8
+                        PaddingLeft: =28
+                        PaddingRight: =28
+                        PaddingTop: =22
+                        PaddingBottom: =16
+                      Children:
+                        - txtWavesTitle:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =26
+                              Text: ="Waves"
+                              Size: =18
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfInk
+                              Wrap: =false
+                        - txtWavesHint:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =20
+                              Text: =If(nfShowAllWaves, "Show all waves is on — every wave is visible regardless of the toggles below. Switch to per-wave control to use them.", "Activate or deactivate each wave. Waves are read from the migration list.")
+                              Size: =13
+                              FontColor: =If(nfShowAllWaves, nfWarningText, nfMuted)
+                              Wrap: =false
+                        - galWaves:
+                            Control: Gallery
+                            Variant: Vertical
+                            Properties:
+                              FillPortions: =1
+                              Items: =Sort(Distinct(colMig, Wave), Value)
+                              TemplateSize: =72
+                              TemplatePadding: =0
+                              ShowScrollbar: =false
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LoadingSpinner: =LoadingSpinner.Data
+                              LoadingSpinnerColor: =nfPrimary
+                            Children:
+                              - conWaveRow:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    X: =0
+                                    Y: =4
+                                    Width: =Parent.TemplateWidth
+                                    Height: =Parent.TemplateHeight - 8
+                                    Fill: =nfPageBg
+                                    BorderThickness: =0
+                                    RadiusTopLeft: =12
+                                    RadiusTopRight: =12
+                                    RadiusBottomLeft: =12
+                                    RadiusBottomRight: =12
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutJustifyContent: =LayoutJustifyContent.Start
+                                    LayoutGap: =16
+                                    PaddingLeft: =20
+                                    PaddingRight: =16
+                                  Children:
+                                    - txtWaveName:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Width: =110
+                                          Height: =24
+                                          Text: =ThisItem.Value
+                                          Size: =16
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: =nfInk
+                                          VerticalAlign: =VerticalAlign.Middle
+                                          Wrap: =false
+                                    - txtWaveStats:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =1
+                                          Height: =24
+                                          Text: |-
+                                            =With(
+                                                {_rows: Filter(colMig, Wave = ThisItem.Value)},
+                                                CountRows(_rows) & " file shares · "
+                                                & CountRows(Filter(_rows, OwnerConfirmed = true)) & " owner confirmed · "
+                                                & CountRows(Filter(_rows, MigrationStatus.Value = "Site Migrated")) & " migrated"
+                                            )
+                                          Size: =13
+                                          FontColor: =nfMuted
+                                          VerticalAlign: =VerticalAlign.Middle
+                                          Wrap: =false
+                                    - pillWaveState:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          FillPortions: =0
+                                          Width: =120
+                                          Height: =28
+                                          Fill: =If(nfShowAllWaves || !IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), RGBA(22, 163, 74, 0.14), RGBA(107, 114, 128, 0.16))
+                                          BorderThickness: =0
+                                          RadiusTopLeft: =14
+                                          RadiusTopRight: =14
+                                          RadiusBottomLeft: =14
+                                          RadiusBottomRight: =14
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutJustifyContent: =LayoutJustifyContent.Center
+                                        Children:
+                                          - txtWaveState:
+                                              Control: Text
+                                              Properties:
+                                                FillPortions: =1
+                                                Text: =If(nfShowAllWaves, "Visible (all)", !IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), "Active", "Inactive")
+                                                Size: =12
+                                                Weight: ='TextCanvas.Weight'.Semibold
+                                                FontColor: =If(nfShowAllWaves || !IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), nfSuccessText, nfMuted)
+                                                Align: ='TextCanvas.Align'.Center
+                                                VerticalAlign: =VerticalAlign.Middle
+                                                Wrap: =false
+                                    - btnWaveToggle:
+                                        Control: Button
+                                        Properties:
+                                          FillPortions: =0
+                                          Width: =140
+                                          Height: =36
+                                          Text: =If(!IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), "Deactivate", "Activate")
+                                          Appearance: =If(!IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), 'ButtonCanvas.Appearance'.Secondary, 'ButtonCanvas.Appearance'.Primary)
+                                          Layout: ='ButtonCanvas.Layout'.IconBefore
+                                          Icon: =If(!IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), "Dismiss", "Checkmark")
+                                          BasePaletteColor: =nfPrimary
+                                          OnSelect: |-
+                                            =With(
+                                                {_row: LookUp(WaveSettings, WaveNumber = ThisItem.Value)},
+                                                If(
+                                                    IsBlank(_row),
+                                                    Patch(WaveSettings, Defaults(WaveSettings), {Title: ThisItem.Value, WaveNumber: ThisItem.Value, IsActive: true}),
+                                                    Patch(WaveSettings, {ID: _row.ID}, {IsActive: !_row.IsActive})
+                                                )
+                                            );
+                                            Refresh(WaveSettings);
+                                            Notify(ThisItem.Value & If(!IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), " is now active for owners.", " is now hidden from owners."), NotificationType.Success)
+
+  # ===================================================================
+  #  ADMIN - PROGRESS
+  # ===================================================================
+  scrAdminProgress:
+    Properties:
+      Fill: =nfPageBg
+      OnVisible: |-
+        =If(
+            !nfIsAdmin,
+            Navigate(scrMigration),
+            ClearCollect(colMig, migration);
+            Set(varRefreshedAt, Now())
+        )
+    Children:
+      - conPageP:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =nfPageBg
+            BorderThickness: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutJustifyContent: =LayoutJustifyContent.Start
+            LayoutGap: =0
+          Children:
+
+            # ---------------- Top bar ----------------
+            - conTopBarP:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =64
+                  Fill: =nfWhite
+                  BorderThickness: =0
+                  DropShadow: =DropShadow.Light
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =16
+                  PaddingLeft: =24
+                  PaddingRight: =24
+                Children:
+                  - conBrandP:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Width: =280
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =12
+                      Children:
+                        - imgLogoP:
+                            Control: Image
+                            Properties:
+                              FillPortions: =0
+                              Width: =36
+                              Height: =36
+                              ImagePosition: =ImagePosition.Fit
+                              Image: |-
+                                ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#4F46E5'/><stop offset='1' stop-color='#DB2777'/></linearGradient></defs><rect width='36' height='36' rx='10' fill='url(#g)'/><path d='M9 12.5h7l2 2.5h9v9.5H9z' fill='none' stroke='#FFFFFF' stroke-width='1.8' stroke-linejoin='round'/><path d='M18 23v-5.5M15.5 20l2.5-2.5 2.5 2.5' fill='none' stroke='#FFFFFF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>")
+                        - conBrandTextP:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =0
+                            Children:
+                              - txtBrandP:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =20
+                                    Text: ="Migration Hub"
+                                    Size: =15
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Wrap: =false
+                              - txtBrandSubP:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="Admin console"
+                                    Size: =11
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                  - conTabsP:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutGap: =8
+                      Children:
+                        - btnTabWavesP:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =150
+                              Height: =36
+                              Text: ="Wave control"
+                              Appearance: ='ButtonCanvas.Appearance'.Subtle
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="Filter"
+                              BasePaletteColor: =nfPrimary
+                              OnSelect: =Navigate(scrAdminWaves)
+                        - btnTabProgressP:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =130
+                              Height: =36
+                              Text: ="Progress"
+                              Appearance: ='ButtonCanvas.Appearance'.Primary
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="DocumentBulletList"
+                              BasePaletteColor: =nfPrimary
+                  - btnOwnerViewP:
+                      Control: Button
+                      Properties:
+                        FillPortions: =0
+                        Width: =130
+                        Height: =36
+                        Text: ="Owner view"
+                        Appearance: ='ButtonCanvas.Appearance'.Secondary
+                        Layout: ='ButtonCanvas.Layout'.IconBefore
+                        Icon: ="Eye"
+                        BasePaletteColor: =nfPrimary
+                        OnSelect: =Navigate(scrMigration)
+                  - conUserChipP:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Width: =240
+                        Height: =44
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.End
+                        LayoutGap: =10
+                      Children:
+                        - conChipTextP:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =0
+                            Children:
+                              - txtChipNameP:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =18
+                                    Text: =User().FullName
+                                    Size: =13
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Align: ='TextCanvas.Align'.End
+                                    Wrap: =false
+                              - txtChipEmailP:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: =User().Email
+                                    Size: =11
+                                    FontColor: =nfMuted
+                                    Align: ='TextCanvas.Align'.End
+                                    Wrap: =false
+                        - conAvatarP:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =36
+                              Height: =36
+                              Fill: =nfPrimary
+                              BorderThickness: =0
+                              RadiusTopLeft: =18
+                              RadiusTopRight: =18
+                              RadiusBottomLeft: =18
+                              RadiusBottomRight: =18
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtInitialsP:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: =Upper(Left(User().FullName, 1) & Left(Last(Split(User().FullName, " ")).Value, 1))
+                                    Size: =13
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfWhite
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+
+            # ---------------- Body ----------------
+            - conBodyP:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =1
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =16
+                  PaddingLeft: =48
+                  PaddingRight: =48
+                  PaddingTop: =24
+                  PaddingBottom: =24
+                Children:
+                  - conPageHeadP:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =40
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =12
+                      Children:
+                        - txtPageTitleP:
+                            Control: Text
+                            Properties:
+                              FillPortions: =1
+                              Height: =40
+                              Text: ="Migration progress"
+                              Size: =22
+                              Weight: ='TextCanvas.Weight'.Bold
+                              FontColor: =nfInk
+                              VerticalAlign: =VerticalAlign.Middle
+                              Wrap: =false
+                        - txtUpdatedP:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Width: =180
+                              Height: =40
+                              Text: ="Updated " & Text(varRefreshedAt, "h:mm AM/PM")
+                              Size: =12
+                              FontColor: =nfMuted
+                              Align: ='TextCanvas.Align'.End
+                              VerticalAlign: =VerticalAlign.Middle
+                              Wrap: =false
+                        - btnRefreshP:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =120
+                              Height: =36
+                              Text: ="Refresh"
+                              Appearance: ='ButtonCanvas.Appearance'.Secondary
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="ArrowClockwise"
+                              BasePaletteColor: =nfPrimary
+                              OnSelect: |-
+                                =ClearCollect(colMig, migration);
+                                Refresh(WaveSettings);
+                                Set(varRefreshedAt, Now())
+
+                  # ---------------- KPI tiles ----------------
+                  - conKpiRow:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =104
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =16
+                      Children:
+                        - kpiTotal:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =nfWhite
+                              BorderThickness: =0
+                              DropShadow: =DropShadow.Light
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =2
+                              PaddingLeft: =22
+                              PaddingRight: =22
+                            Children:
+                              - txtKpiTotalLabel:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="FILE SHARES"
+                                    Size: =11
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                              - txtKpiTotalValue:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =38
+                                    Text: =CountRows(colMig)
+                                    Size: =30
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    FontColor: =nfInk
+                                    Wrap: =false
+                              - txtKpiTotalSub:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="in the migration list"
+                                    Size: =12
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                        - kpiConfirmed:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =nfWhite
+                              BorderThickness: =0
+                              DropShadow: =DropShadow.Light
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =2
+                              PaddingLeft: =22
+                              PaddingRight: =22
+                            Children:
+                              - txtKpiConfLabel:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="OWNER CONFIRMED"
+                                    Size: =11
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                              - txtKpiConfValue:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =38
+                                    Text: =CountRows(Filter(colMig, OwnerConfirmed = true))
+                                    Size: =30
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    FontColor: =nfSuccessText
+                                    Wrap: =false
+                              - txtKpiConfSub:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: =Round(100 * CountRows(Filter(colMig, OwnerConfirmed = true)) / Max(1, CountRows(colMig)), 0) & "% of all shares · " & CountRows(Filter(colMig, OwnerConfirmed <> true)) & " awaiting"
+                                    Size: =12
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                        - kpiMigrated:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =nfWhite
+                              BorderThickness: =0
+                              DropShadow: =DropShadow.Light
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =2
+                              PaddingLeft: =22
+                              PaddingRight: =22
+                            Children:
+                              - txtKpiMigLabel:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="SITES MIGRATED"
+                                    Size: =11
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                              - txtKpiMigValue:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =38
+                                    Text: =CountRows(Filter(colMig, MigrationStatus.Value = "Site Migrated"))
+                                    Size: =30
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    FontColor: =nfPrimary
+                                    Wrap: =false
+                              - txtKpiMigSub:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: =Round(100 * CountRows(Filter(colMig, MigrationStatus.Value = "Site Migrated")) / Max(1, CountRows(colMig)), 0) & "% of all shares"
+                                    Size: =12
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                        - kpiWaves:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =nfWhite
+                              BorderThickness: =0
+                              DropShadow: =DropShadow.Light
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =2
+                              PaddingLeft: =22
+                              PaddingRight: =22
+                            Children:
+                              - txtKpiWaveLabel:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: ="VISIBLE TO OWNERS"
+                                    Size: =11
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                              - txtKpiWaveValue:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =38
+                                    Text: =nfActiveWaveText
+                                    Size: =22
+                                    Weight: ='TextCanvas.Weight'.Bold
+                                    FontColor: =nfInk
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                              - txtKpiWaveSub:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =16
+                                    Text: =CountRows(Distinct(colMig, Wave)) & " waves in the list · change on Wave control"
+                                    Size: =12
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+
+                  # ---------------- Pipeline + breakdowns ----------------
+                  - conRow2:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =16
+                      Children:
+                        - conPipelineCard:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =3
+                              Fill: =nfWhite
+                              BorderThickness: =0
+                              DropShadow: =DropShadow.Light
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =8
+                              PaddingLeft: =28
+                              PaddingRight: =28
+                              PaddingTop: =22
+                              PaddingBottom: =16
+                            Children:
+                              - txtPipelineTitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =26
+                                    Text: ="Status pipeline"
+                                    Size: =18
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =nfInk
+                                    Wrap: =false
+                              - txtPipelineHint:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =20
+                                    Text: ="File shares at each migration status · " & CountRows(Filter(colMig, IsBlank(MigrationStatus.Value))) & " with no status yet"
+                                    Size: =13
+                                    FontColor: =nfMuted
+                                    Wrap: =false
+                              - galStatus:
+                                  Control: Gallery
+                                  Variant: Vertical
+                                  Properties:
+                                    FillPortions: =1
+                                    Items: =nfStatuses
+                                    TemplateSize: =40
+                                    TemplatePadding: =0
+                                    ShowScrollbar: =false
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                  Children:
+                                    - conStatusRow:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          X: =0
+                                          Y: =0
+                                          Width: =Parent.TemplateWidth
+                                          Height: =Parent.TemplateHeight
+                                          Fill: =RGBA(0, 0, 0, 0)
+                                          BorderThickness: =0
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutJustifyContent: =LayoutJustifyContent.Start
+                                          LayoutGap: =14
+                                        Children:
+                                          - txtStatusName:
+                                              Control: Text
+                                              Properties:
+                                                FillPortions: =0
+                                                Width: =120
+                                                Height: =24
+                                                Text: =ThisItem.Value
+                                                Size: =13
+                                                Weight: ='TextCanvas.Weight'.Semibold
+                                                FontColor: =nfInk
+                                                VerticalAlign: =VerticalAlign.Middle
+                                                Wrap: =false
+                                          - conTrack:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                FillPortions: =1
+                                                Height: =10
+                                                AlignInContainer: =AlignInContainer.Center
+                                                Fill: =nfLine
+                                                BorderThickness: =0
+                                                RadiusTopLeft: =5
+                                                RadiusTopRight: =5
+                                                RadiusBottomLeft: =5
+                                                RadiusBottomRight: =5
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutJustifyContent: =LayoutJustifyContent.Start
+                                                LayoutGap: =0
+                                              Children:
+                                                - conBar:
+                                                    Control: GroupContainer
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Width: |-
+                                                        =With(
+                                                            {
+                                                                _n: CountRows(Filter(colMig, MigrationStatus.Value = ThisItem.Value)),
+                                                                _t: Max(1, CountRows(colMig))
+                                                            },
+                                                            If(_n = 0, 0, Max(8, Round(Parent.Width * _n / _t, 0)))
+                                                        )
+                                                      Fill: =If(ThisItem.Value = "Site Migrated", nfSuccess, nfPrimary)
+                                                      BorderThickness: =0
+                                                      RadiusTopLeft: =5
+                                                      RadiusTopRight: =5
+                                                      RadiusBottomLeft: =5
+                                                      RadiusBottomRight: =5
+                                          - txtStatusCount:
+                                              Control: Text
+                                              Properties:
+                                                FillPortions: =0
+                                                Width: =60
+                                                Height: =24
+                                                Text: =CountRows(Filter(colMig, MigrationStatus.Value = ThisItem.Value))
+                                                Size: =13
+                                                Weight: ='TextCanvas.Weight'.Semibold
+                                                FontColor: =nfInk
+                                                Align: ='TextCanvas.Align'.End
+                                                VerticalAlign: =VerticalAlign.Middle
+                                                Wrap: =false
+                        - conRightCol:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =2
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =16
+                            Children:
+                              - conResponsesCard:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =176
+                                    Fill: =nfWhite
+                                    BorderThickness: =0
+                                    DropShadow: =DropShadow.Light
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutJustifyContent: =LayoutJustifyContent.Start
+                                    LayoutGap: =10
+                                    PaddingLeft: =28
+                                    PaddingRight: =28
+                                    PaddingTop: =22
+                                    PaddingBottom: =16
+                                  Children:
+                                    - txtResponsesTitle:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =26
+                                          Text: ="Owner responses"
+                                          Size: =18
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: =nfInk
+                                          Wrap: =false
+                                    - conResponsesCols:
+                                        Control: GroupContainer
+                                        Variant: AutoLayout
+                                        Properties:
+                                          FillPortions: =1
+                                          Fill: =RGBA(0, 0, 0, 0)
+                                          BorderThickness: =0
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutJustifyContent: =LayoutJustifyContent.Start
+                                          LayoutGap: =16
+                                        Children:
+                                          - conNeedCol:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                FillPortions: =1
+                                                Fill: =RGBA(0, 0, 0, 0)
+                                                BorderThickness: =0
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutJustifyContent: =LayoutJustifyContent.Start
+                                                LayoutGap: =4
+                                              Children:
+                                                - txtNeedTitle:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =18
+                                                      Text: ="Do you need this file share?"
+                                                      Size: =12
+                                                      Weight: ='TextCanvas.Weight'.Semibold
+                                                      FontColor: =nfMuted
+                                                      Wrap: =false
+                                                - txtNeedYes:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =20
+                                                      Text: ="Yes · " & CountRows(Filter(colMig, NeedFileShare.Value = "Yes"))
+                                                      Size: =13
+                                                      FontColor: =nfInk
+                                                      Wrap: =false
+                                                - txtNeedNo:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =20
+                                                      Text: ="No · " & CountRows(Filter(colMig, NeedFileShare.Value = "No"))
+                                                      Size: =13
+                                                      FontColor: =nfInk
+                                                      Wrap: =false
+                                                - txtNeedNA:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =20
+                                                      Text: ="Not answered · " & CountRows(Filter(colMig, IsBlank(NeedFileShare.Value)))
+                                                      Size: =13
+                                                      FontColor: =nfMuted
+                                                      Wrap: =false
+                                          - conTypeCol:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                FillPortions: =1
+                                                Fill: =RGBA(0, 0, 0, 0)
+                                                BorderThickness: =0
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutJustifyContent: =LayoutJustifyContent.Start
+                                                LayoutGap: =4
+                                              Children:
+                                                - txtTypeTitle:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =18
+                                                      Text: ="Archive or active share?"
+                                                      Size: =12
+                                                      Weight: ='TextCanvas.Weight'.Semibold
+                                                      FontColor: =nfMuted
+                                                      Wrap: =false
+                                                - txtTypeActive:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =20
+                                                      Text: ="Active · " & CountRows(Filter(colMig, ShareType.Value = "Active"))
+                                                      Size: =13
+                                                      FontColor: =nfInk
+                                                      Wrap: =false
+                                                - txtTypeArchive:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =20
+                                                      Text: ="Archive · " & CountRows(Filter(colMig, ShareType.Value = "Archive"))
+                                                      Size: =13
+                                                      FontColor: =nfInk
+                                                      Wrap: =false
+                                                - txtTypeNA:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Height: =20
+                                                      Text: ="Not answered · " & CountRows(Filter(colMig, IsBlank(ShareType.Value)))
+                                                      Size: =13
+                                                      FontColor: =nfMuted
+                                                      Wrap: =false
+                              - conWaveCard:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =1
+                                    Fill: =nfWhite
+                                    BorderThickness: =0
+                                    DropShadow: =DropShadow.Light
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutJustifyContent: =LayoutJustifyContent.Start
+                                    LayoutGap: =8
+                                    PaddingLeft: =28
+                                    PaddingRight: =28
+                                    PaddingTop: =22
+                                    PaddingBottom: =12
+                                  Children:
+                                    - txtWaveCardTitle:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =26
+                                          Text: ="By wave"
+                                          Size: =18
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: =nfInk
+                                          Wrap: =false
+                                    - galWaveStats:
+                                        Control: Gallery
+                                        Variant: Vertical
+                                        Properties:
+                                          FillPortions: =1
+                                          Items: =Sort(Distinct(colMig, Wave), Value)
+                                          TemplateSize: =44
+                                          TemplatePadding: =0
+                                          ShowScrollbar: =false
+                                          Fill: =RGBA(0, 0, 0, 0)
+                                          BorderThickness: =0
+                                        Children:
+                                          - conWaveStatRow:
+                                              Control: GroupContainer
+                                              Variant: AutoLayout
+                                              Properties:
+                                                X: =0
+                                                Y: =0
+                                                Width: =Parent.TemplateWidth
+                                                Height: =Parent.TemplateHeight
+                                                Fill: =RGBA(0, 0, 0, 0)
+                                                BorderThickness: =0
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutAlignItems: =LayoutAlignItems.Center
+                                                LayoutJustifyContent: =LayoutJustifyContent.Start
+                                                LayoutGap: =12
+                                              Children:
+                                                - txtWsName:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Width: =80
+                                                      Height: =24
+                                                      Text: =ThisItem.Value
+                                                      Size: =13
+                                                      Weight: ='TextCanvas.Weight'.Semibold
+                                                      FontColor: =nfInk
+                                                      VerticalAlign: =VerticalAlign.Middle
+                                                      Wrap: =false
+                                                - pillWsState:
+                                                    Control: GroupContainer
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      FillPortions: =0
+                                                      Width: =96
+                                                      Height: =24
+                                                      Fill: =If(nfShowAllWaves || !IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), RGBA(22, 163, 74, 0.14), RGBA(107, 114, 128, 0.16))
+                                                      BorderThickness: =0
+                                                      RadiusTopLeft: =12
+                                                      RadiusTopRight: =12
+                                                      RadiusBottomLeft: =12
+                                                      RadiusBottomRight: =12
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                    Children:
+                                                      - txtWsState:
+                                                          Control: Text
+                                                          Properties:
+                                                            FillPortions: =1
+                                                            Text: =If(nfShowAllWaves || !IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), "Active", "Inactive")
+                                                            Size: =11
+                                                            Weight: ='TextCanvas.Weight'.Semibold
+                                                            FontColor: =If(nfShowAllWaves || !IsBlank(LookUp(nfActiveWaves, WaveNumber = ThisItem.Value)), nfSuccessText, nfMuted)
+                                                            Align: ='TextCanvas.Align'.Center
+                                                            VerticalAlign: =VerticalAlign.Middle
+                                                            Wrap: =false
+                                                - txtWsStats:
+                                                    Control: Text
+                                                    Properties:
+                                                      FillPortions: =1
+                                                      Height: =24
+                                                      Text: |-
+                                                        =With(
+                                                            {_rows: Filter(colMig, Wave = ThisItem.Value)},
+                                                            CountRows(_rows) & " shares · "
+                                                            & CountRows(Filter(_rows, OwnerConfirmed = true)) & " confirmed · "
+                                                            & CountRows(Filter(_rows, MigrationStatus.Value = "Site Migrated")) & " migrated"
+                                                        )
+                                                      Size: =12
+                                                      FontColor: =nfMuted
+                                                      VerticalAlign: =VerticalAlign.Middle
+                                                      Wrap: =false
