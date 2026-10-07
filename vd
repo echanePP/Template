@@ -1,0 +1,125 @@
+# =====================================================================
+#  User-guide video popup  (paste onto scrMigration: select the SCREEN, Ctrl+V)
+#  Adds: floating "Watch guide" button (bottom-right) + overlay dialog.
+#  After pasting, insert the Video control into conVideoSlot (see reply).
+# =====================================================================
+- btnGuideFab:
+    Control: Button
+    Properties:
+      X: =Parent.Width - Self.Width - 32
+      Y: =Parent.Height - Self.Height - 28
+      Width: =176
+      Height: =44
+      Text: ="Watch the guide"
+      Appearance: ='ButtonCanvas.Appearance'.Primary
+      Layout: ='ButtonCanvas.Layout'.IconBefore
+      Icon: ="Play"
+      BasePaletteColor: =nfAccent
+      OnSelect: |-
+        =Set(varGuideSrc, Blank());
+        Set(varShowGuide, true);
+        Set(varGuideSrc, guide_video)
+
+- conGuideScrim:
+    Control: GroupContainer
+    Variant: ManualLayout
+    Properties:
+      X: =0
+      Y: =0
+      Width: =Parent.Width
+      Height: =Parent.Height
+      Visible: =varShowGuide
+      Fill: =RGBA(17, 24, 39, 0.7)
+      BorderThickness: =0
+    Children:
+      - conGuideDialog:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Min(960, Parent.Width - 48)
+            Height: =Min(Self.Width * 9 / 16 + 72, Parent.Height - 48)
+            Fill: =nfWhite
+            BorderThickness: =0
+            DropShadow: =DropShadow.Bold
+            RadiusTopLeft: =20
+            RadiusTopRight: =20
+            RadiusBottomLeft: =20
+            RadiusBottomRight: =20
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutJustifyContent: =LayoutJustifyContent.Start
+            LayoutGap: =0
+          Children:
+            - conGuideHead:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =64
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =12
+                  PaddingLeft: =24
+                  PaddingRight: =16
+                Children:
+                  - conGuideText:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                        LayoutGap: =0
+                      Children:
+                        - txtGuideTitle:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =24
+                              Text: ="How to confirm your destination site"
+                              Size: =16
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: =nfInk
+                              Wrap: =false
+                        - txtGuideSub:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =18
+                              Text: ="3-minute walkthrough"
+                              Size: =12
+                              FontColor: =nfMuted
+                              Wrap: =false
+                  - btnGuideClose:
+                      Control: Button
+                      Properties:
+                        FillPortions: =0
+                        Width: =110
+                        Height: =36
+                        Text: ="Close"
+                        Appearance: ='ButtonCanvas.Appearance'.Secondary
+                        Layout: ='ButtonCanvas.Layout'.IconBefore
+                        Icon: ="Dismiss"
+                        BasePaletteColor: =nfPrimary
+                        OnSelect: |-
+                          =Set(varShowGuide, false);
+                          Set(varGuideSrc, Blank())
+            - conVideoSlot:
+                Control: GroupContainer
+                Variant: ManualLayout
+                Properties:
+                  FillPortions: =1
+                  Fill: =RGBA(0, 0, 0, 1)
+                  BorderThickness: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                  RadiusBottomLeft: =20
+                  RadiusBottomRight: =20
