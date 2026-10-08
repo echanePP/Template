@@ -1,0 +1,499 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "flex-direction": "column",
+    "width": "100%",
+    "margin-bottom": "10px",
+    "box-sizing": "border-box"
+  },
+  "children": [
+    {
+      "elmType": "div",
+      "style": {
+        "display": "flex",
+        "align-items": "center",
+        "flex-wrap": "wrap",
+        "padding": "22px 24px",
+        "border-radius": "16px",
+        "background-color": "#4F46E5",
+        "background-image": "linear-gradient(135deg, #4F46E5 0%, #7C3AED 55%, #DB2777 100%)",
+        "box-shadow": "0 10px 30px rgba(79,70,229,0.28)"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "style": {
+            "width": "52px",
+            "height": "52px",
+            "border-radius": "14px",
+            "flex-shrink": "0",
+            "margin-right": "16px",
+            "display": "flex",
+            "align-items": "center",
+            "justify-content": "center",
+            "background-color": "rgba(255,255,255,0.18)",
+            "border": "1px solid rgba(255,255,255,0.35)"
+          },
+          "children": [
+            {
+              "elmType": "span",
+              "attributes": {
+                "iconName": "Headset"
+              },
+              "style": {
+                "font-size": "24px",
+                "color": "#FFFFFF"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex": "1 1 260px",
+            "min-width": "0",
+            "margin-right": "12px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "txtContent": "FILE SHARE MIGRATION  ·  HYPERCARE",
+              "style": {
+                "font-size": "11px",
+                "font-weight": "600",
+                "letter-spacing": "0.12em",
+                "color": "rgba(255,255,255,0.78)"
+              }
+            },
+            {
+              "elmType": "div",
+              "txtContent": "=if([$Title] == '', 'Report a file share issue', [$Title])",
+              "style": {
+                "font-size": "22px",
+                "font-weight": "700",
+                "color": "#FFFFFF",
+                "margin-top": "4px",
+                "white-space": "nowrap",
+                "overflow": "hidden",
+                "text-overflow": "ellipsis"
+              }
+            },
+            {
+              "elmType": "div",
+              "txtContent": "=if([$Title] == '', 'Something missing or not working since your share moved to SharePoint? Tell us and we will take it from here.', if([$ReportedBy.title] == '', 'Hypercare request', 'Reported by ' + [$ReportedBy.title]) + if(toString([$IssueCategory]) == '', '', '  ·  ' + [$IssueCategory]))",
+              "style": {
+                "font-size": "13px",
+                "color": "rgba(255,255,255,0.88)",
+                "margin-top": "4px"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "display": "=if([$Status] == '', 'none', 'flex')",
+            "align-items": "center",
+            "padding": "6px 14px",
+            "border-radius": "20px",
+            "background-color": "#FFFFFF",
+            "box-shadow": "0 2px 8px rgba(15,23,42,0.15)",
+            "margin-top": "6px"
+          },
+          "children": [
+            {
+              "elmType": "span",
+              "style": {
+                "width": "8px",
+                "height": "8px",
+                "border-radius": "50%",
+                "margin-right": "8px",
+                "background-color": "=if([$Status] == 'New', '#4F46E5', if([$Status] == 'Triaged', '#0EA5E9', if([$Status] == 'In progress', '#F59E0B', if([$Status] == 'Waiting on user', '#EC4899', if([$Status] == 'Resolved', '#16A34A', if([$Status] == 'Closed', '#9CA3AF', '#94A3B8'))))))"
+              }
+            },
+            {
+              "elmType": "span",
+              "txtContent": "=if([$Status] == 'Waiting on user', 'Waiting on you', [$Status])",
+              "style": {
+                "font-size": "12px",
+                "font-weight": "700",
+                "color": "=if([$Status] == 'New', '#4338CA', if([$Status] == 'Triaged', '#0369A1', if([$Status] == 'In progress', '#92400E', if([$Status] == 'Waiting on user', '#9D174D', if([$Status] == 'Resolved', '#15803D', if([$Status] == 'Closed', '#4B5563', '#334155'))))))"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "elmType": "div",
+      "style": {
+        "display": "=if([$Status] == '', 'none', 'flex')",
+        "align-items": "flex-start",
+        "margin-top": "14px",
+        "padding": "16px 18px",
+        "background-color": "#FFFFFF",
+        "border": "1px solid #EEF0F6",
+        "border-radius": "14px",
+        "box-shadow": "0 1px 2px rgba(15,23,42,0.04)"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "style": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "center",
+            "flex-shrink": "0",
+            "width": "84px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "28px",
+                "height": "28px",
+                "border-radius": "50%",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "box-sizing": "border-box",
+                "background-color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 0), '#4F46E5', if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 0), '#FFFFFF', '#F1F5F9'))",
+                "border": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 0), '2px solid #4F46E5', '2px solid transparent')",
+                "box-shadow": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 0), '0 0 0 4px #E0E7FF', 'none')"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "CheckMark"
+                  },
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 0), 'block', 'none')",
+                    "font-size": "12px",
+                    "color": "#FFFFFF",
+                    "font-weight": "700"
+                  }
+                },
+                {
+                  "elmType": "span",
+                  "txtContent": "1",
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 0), 'none', 'block')",
+                    "font-size": "12px",
+                    "font-weight": "700",
+                    "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 0), '#4F46E5', '#94A3B8')"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "span",
+              "txtContent": "='Submitted'",
+              "style": {
+                "font-size": "12px",
+                "margin-top": "6px",
+                "text-align": "center",
+                "font-weight": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 0), '700', '500')",
+                "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 0) || (if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 0), '#0F172A', '#94A3B8')"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "1",
+            "height": "2px",
+            "margin-top": "13px",
+            "border-radius": "2px",
+            "min-width": "16px",
+            "background-color": "=if(if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 0, '#4F46E5', '#E2E8F0')"
+          }
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "center",
+            "flex-shrink": "0",
+            "width": "84px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "28px",
+                "height": "28px",
+                "border-radius": "50%",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "box-sizing": "border-box",
+                "background-color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 1), '#4F46E5', if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 1), '#FFFFFF', '#F1F5F9'))",
+                "border": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 1), '2px solid #4F46E5', '2px solid transparent')",
+                "box-shadow": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 1), '0 0 0 4px #E0E7FF', 'none')"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "CheckMark"
+                  },
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 1), 'block', 'none')",
+                    "font-size": "12px",
+                    "color": "#FFFFFF",
+                    "font-weight": "700"
+                  }
+                },
+                {
+                  "elmType": "span",
+                  "txtContent": "2",
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 1), 'none', 'block')",
+                    "font-size": "12px",
+                    "font-weight": "700",
+                    "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 1), '#4F46E5', '#94A3B8')"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "span",
+              "txtContent": "='Triaged'",
+              "style": {
+                "font-size": "12px",
+                "margin-top": "6px",
+                "text-align": "center",
+                "font-weight": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 1), '700', '500')",
+                "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 1) || (if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 1), '#0F172A', '#94A3B8')"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "1",
+            "height": "2px",
+            "margin-top": "13px",
+            "border-radius": "2px",
+            "min-width": "16px",
+            "background-color": "=if(if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 1, '#4F46E5', '#E2E8F0')"
+          }
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "center",
+            "flex-shrink": "0",
+            "width": "84px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "28px",
+                "height": "28px",
+                "border-radius": "50%",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "box-sizing": "border-box",
+                "background-color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 2), '#4F46E5', if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 2), '#FFFFFF', '#F1F5F9'))",
+                "border": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 2), '2px solid #4F46E5', '2px solid transparent')",
+                "box-shadow": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 2), '0 0 0 4px #E0E7FF', 'none')"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "CheckMark"
+                  },
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 2), 'block', 'none')",
+                    "font-size": "12px",
+                    "color": "#FFFFFF",
+                    "font-weight": "700"
+                  }
+                },
+                {
+                  "elmType": "span",
+                  "txtContent": "3",
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 2), 'none', 'block')",
+                    "font-size": "12px",
+                    "font-weight": "700",
+                    "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 2), '#4F46E5', '#94A3B8')"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "span",
+              "txtContent": "=if([$Status] == 'Waiting on user', 'Waiting on you', 'In progress')",
+              "style": {
+                "font-size": "12px",
+                "margin-top": "6px",
+                "text-align": "center",
+                "font-weight": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 2), '700', '500')",
+                "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 2) || (if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 2), '#0F172A', '#94A3B8')"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "1",
+            "height": "2px",
+            "margin-top": "13px",
+            "border-radius": "2px",
+            "min-width": "16px",
+            "background-color": "=if(if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 2, '#4F46E5', '#E2E8F0')"
+          }
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "center",
+            "flex-shrink": "0",
+            "width": "84px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "28px",
+                "height": "28px",
+                "border-radius": "50%",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "box-sizing": "border-box",
+                "background-color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 3), '#4F46E5', if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 3), '#FFFFFF', '#F1F5F9'))",
+                "border": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 3), '2px solid #4F46E5', '2px solid transparent')",
+                "box-shadow": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 3), '0 0 0 4px #E0E7FF', 'none')"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "CheckMark"
+                  },
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 3), 'block', 'none')",
+                    "font-size": "12px",
+                    "color": "#FFFFFF",
+                    "font-weight": "700"
+                  }
+                },
+                {
+                  "elmType": "span",
+                  "txtContent": "4",
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 3), 'none', 'block')",
+                    "font-size": "12px",
+                    "font-weight": "700",
+                    "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 3), '#4F46E5', '#94A3B8')"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "span",
+              "txtContent": "='Resolved'",
+              "style": {
+                "font-size": "12px",
+                "margin-top": "6px",
+                "text-align": "center",
+                "font-weight": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 3), '700', '500')",
+                "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 3) || (if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 3), '#0F172A', '#94A3B8')"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "1",
+            "height": "2px",
+            "margin-top": "13px",
+            "border-radius": "2px",
+            "min-width": "16px",
+            "background-color": "=if(if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 3, '#4F46E5', '#E2E8F0')"
+          }
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "center",
+            "flex-shrink": "0",
+            "width": "84px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "28px",
+                "height": "28px",
+                "border-radius": "50%",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "box-sizing": "border-box",
+                "background-color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 4), '#4F46E5', if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 4), '#FFFFFF', '#F1F5F9'))",
+                "border": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 4), '2px solid #4F46E5', '2px solid transparent')",
+                "box-shadow": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 4), '0 0 0 4px #E0E7FF', 'none')"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "CheckMark"
+                  },
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 4), 'block', 'none')",
+                    "font-size": "12px",
+                    "color": "#FFFFFF",
+                    "font-weight": "700"
+                  }
+                },
+                {
+                  "elmType": "span",
+                  "txtContent": "5",
+                  "style": {
+                    "display": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 4), 'none', 'block')",
+                    "font-size": "12px",
+                    "font-weight": "700",
+                    "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 4), '#4F46E5', '#94A3B8')"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "span",
+              "txtContent": "='Closed'",
+              "style": {
+                "font-size": "12px",
+                "margin-top": "6px",
+                "text-align": "center",
+                "font-weight": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 4), '700', '500')",
+                "color": "=if((if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) == 4) || (if([$Status] == 'Triaged', 1, if([$Status] == 'In progress' || [$Status] == 'Waiting on user', 2, if([$Status] == 'Resolved', 3, if([$Status] == 'Closed', 4, 0)))) > 4), '#0F172A', '#94A3B8')"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
