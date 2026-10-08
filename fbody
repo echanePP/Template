@@ -1,0 +1,28 @@
+{
+  "sections": [
+    {
+      "displayname": "📝  Request details",
+      "fields": [
+        "Reported By",
+        "File Share Path",
+        "Issue Summary",
+        "Issue Category",
+        "Other issues",
+        "Notes"
+      ]
+    },
+    {
+      "displayname": "🛠️  Admin · migration team",
+      "fields": [
+        "Impact",
+        "Destination Site",
+        "Status",
+        "Assigned To",
+        "Root Cause",
+        "Resolution",
+        "Resolved on",
+        "Requires re-migration"
+      ]
+    }
+  ]
+}
