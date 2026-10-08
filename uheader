@@ -1,0 +1,232 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "width": "100%",
+    "box-sizing": "border-box",
+    "margin-bottom": "14px",
+    "border-radius": "18px",
+    "overflow": "hidden",
+    "background-color": "#1E1B4B",
+    "box-shadow": "0 12px 32px rgba(30,27,75,0.35)"
+  },
+  "children": [
+    {
+      "elmType": "div",
+      "style": {
+        "display": "flex",
+        "align-items": "flex-start",
+        "padding": "24px 26px 22px"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "style": {
+            "width": "54px",
+            "height": "54px",
+            "flex-shrink": "0",
+            "margin-right": "18px",
+            "border-radius": "16px",
+            "display": "flex",
+            "align-items": "center",
+            "justify-content": "center",
+            "background-color": "#6366F1",
+            "box-shadow": "0 6px 16px rgba(99,102,241,0.55)"
+          },
+          "children": [
+            {
+              "elmType": "span",
+              "attributes": {
+                "iconName": "Headset"
+              },
+              "style": {
+                "font-size": "26px",
+                "color": "#FFFFFF"
+              }
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "1",
+            "min-width": "0"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "txtContent": "FILE SHARE MIGRATION  ·  HYPERCARE",
+              "style": {
+                "font-size": "11px",
+                "font-weight": "700",
+                "letter-spacing": "0.14em",
+                "color": "#22D3EE"
+              }
+            },
+            {
+              "elmType": "div",
+              "txtContent": "Submit a new hypercare form",
+              "style": {
+                "font-size": "24px",
+                "font-weight": "700",
+                "color": "#FFFFFF",
+                "margin-top": "6px"
+              }
+            },
+            {
+              "elmType": "div",
+              "txtContent": "Something missing or not working since your file share moved to SharePoint? Tell us what you are seeing and the migration team will take it from here.",
+              "style": {
+                "font-size": "13px",
+                "color": "#C7D2FE",
+                "margin-top": "6px",
+                "line-height": "1.5"
+              }
+            },
+            {
+              "elmType": "div",
+              "style": {
+                "display": "flex",
+                "flex-wrap": "wrap"
+              },
+              "children": [
+                {
+                  "elmType": "div",
+                  "style": {
+                    "display": "flex",
+                    "align-items": "center",
+                    "padding": "5px 12px",
+                    "margin": "12px 8px 0 0",
+                    "border-radius": "14px",
+                    "background-color": "rgba(255,255,255,0.08)",
+                    "border": "1px solid rgba(255,255,255,0.18)"
+                  },
+                  "children": [
+                    {
+                      "elmType": "span",
+                      "attributes": {
+                        "iconName": "Clock"
+                      },
+                      "style": {
+                        "font-size": "12px",
+                        "color": "#22D3EE",
+                        "margin-right": "6px"
+                      }
+                    },
+                    {
+                      "elmType": "span",
+                      "txtContent": "About 2 minutes",
+                      "style": {
+                        "font-size": "12px",
+                        "font-weight": "600",
+                        "color": "#E0E7FF"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "elmType": "div",
+                  "style": {
+                    "display": "flex",
+                    "align-items": "center",
+                    "padding": "5px 12px",
+                    "margin": "12px 8px 0 0",
+                    "border-radius": "14px",
+                    "background-color": "rgba(255,255,255,0.08)",
+                    "border": "1px solid rgba(255,255,255,0.18)"
+                  },
+                  "children": [
+                    {
+                      "elmType": "span",
+                      "attributes": {
+                        "iconName": "CheckList"
+                      },
+                      "style": {
+                        "font-size": "12px",
+                        "color": "#F472B6",
+                        "margin-right": "6px"
+                      }
+                    },
+                    {
+                      "elmType": "span",
+                      "txtContent": "Required fields marked *",
+                      "style": {
+                        "font-size": "12px",
+                        "font-weight": "600",
+                        "color": "#E0E7FF"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "elmType": "div",
+                  "style": {
+                    "display": "flex",
+                    "align-items": "center",
+                    "padding": "5px 12px",
+                    "margin": "12px 8px 0 0",
+                    "border-radius": "14px",
+                    "background-color": "rgba(255,255,255,0.08)",
+                    "border": "1px solid rgba(255,255,255,0.18)"
+                  },
+                  "children": [
+                    {
+                      "elmType": "span",
+                      "attributes": {
+                        "iconName": "Mail"
+                      },
+                      "style": {
+                        "font-size": "12px",
+                        "color": "#A5B4FC",
+                        "margin-right": "6px"
+                      }
+                    },
+                    {
+                      "elmType": "span",
+                      "txtContent": "Reply within 1 business day",
+                      "style": {
+                        "font-size": "12px",
+                        "font-weight": "600",
+                        "color": "#E0E7FF"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "elmType": "div",
+      "style": {
+        "display": "flex",
+        "height": "5px"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "3",
+            "background-color": "#6366F1"
+          }
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "2",
+            "background-color": "#EC4899"
+          }
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex-grow": "1",
+            "background-color": "#22D3EE"
+          }
+        }
+      ]
+    }
+  ]
+}
