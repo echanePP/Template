@@ -1,0 +1,271 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "flex-direction": "column",
+    "width": "100%",
+    "margin-top": "12px",
+    "box-sizing": "border-box"
+  },
+  "children": [
+    {
+      "elmType": "div",
+      "style": {
+        "display": "flex",
+        "flex-wrap": "wrap",
+        "margin-right": "-10px"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "style": {
+            "flex": "1 1 200px",
+            "display": "flex",
+            "align-items": "flex-start",
+            "padding": "14px",
+            "margin": "0 10px 10px 0",
+            "background-color": "#F5F6FF",
+            "border": "1px solid rgba(15,23,42,0.06)",
+            "border-radius": "12px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "32px",
+                "height": "32px",
+                "flex-shrink": "0",
+                "border-radius": "10px",
+                "background-color": "#4F46E5",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "margin-right": "12px"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "FabricFolderSearch"
+                  },
+                  "style": {
+                    "font-size": "15px",
+                    "color": "#FFFFFF"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "div",
+              "children": [
+                {
+                  "elmType": "div",
+                  "txtContent": "Be specific",
+                  "style": {
+                    "font-size": "13px",
+                    "font-weight": "700",
+                    "color": "#0F172A"
+                  }
+                },
+                {
+                  "elmType": "div",
+                  "txtContent": "Include the full file share path and the exact file or folder names that are affected.",
+                  "style": {
+                    "font-size": "12px",
+                    "color": "#64748B",
+                    "margin-top": "3px",
+                    "line-height": "1.45"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex": "1 1 200px",
+            "display": "flex",
+            "align-items": "flex-start",
+            "padding": "14px",
+            "margin": "0 10px 10px 0",
+            "background-color": "#FFF5FA",
+            "border": "1px solid rgba(15,23,42,0.06)",
+            "border-radius": "12px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "32px",
+                "height": "32px",
+                "flex-shrink": "0",
+                "border-radius": "10px",
+                "background-color": "#DB2777",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "margin-right": "12px"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "Attach"
+                  },
+                  "style": {
+                    "font-size": "15px",
+                    "color": "#FFFFFF"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "div",
+              "children": [
+                {
+                  "elmType": "div",
+                  "txtContent": "Add screenshots",
+                  "style": {
+                    "font-size": "13px",
+                    "font-weight": "700",
+                    "color": "#0F172A"
+                  }
+                },
+                {
+                  "elmType": "div",
+                  "txtContent": "Attach a screenshot of any error message — it is the fastest way for us to diagnose the issue.",
+                  "style": {
+                    "font-size": "12px",
+                    "color": "#64748B",
+                    "margin-top": "3px",
+                    "line-height": "1.45"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "elmType": "div",
+          "style": {
+            "flex": "1 1 200px",
+            "display": "flex",
+            "align-items": "flex-start",
+            "padding": "14px",
+            "margin": "0 10px 10px 0",
+            "background-color": "#F2FBF5",
+            "border": "1px solid rgba(15,23,42,0.06)",
+            "border-radius": "12px"
+          },
+          "children": [
+            {
+              "elmType": "div",
+              "style": {
+                "width": "32px",
+                "height": "32px",
+                "flex-shrink": "0",
+                "border-radius": "10px",
+                "background-color": "#16A34A",
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "margin-right": "12px"
+              },
+              "children": [
+                {
+                  "elmType": "span",
+                  "attributes": {
+                    "iconName": "Clock"
+                  },
+                  "style": {
+                    "font-size": "15px",
+                    "color": "#FFFFFF"
+                  }
+                }
+              ]
+            },
+            {
+              "elmType": "div",
+              "children": [
+                {
+                  "elmType": "div",
+                  "txtContent": "What happens next",
+                  "style": {
+                    "font-size": "13px",
+                    "font-weight": "700",
+                    "color": "#0F172A"
+                  }
+                },
+                {
+                  "elmType": "div",
+                  "txtContent": "The migration team reviews new requests within 1 business day and will contact you directly.",
+                  "style": {
+                    "font-size": "12px",
+                    "color": "#64748B",
+                    "margin-top": "3px",
+                    "line-height": "1.45"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "elmType": "div",
+      "style": {
+        "display": "flex",
+        "align-items": "center",
+        "flex-wrap": "wrap",
+        "padding": "14px 18px",
+        "border-radius": "12px",
+        "background-color": "#1E1B4B",
+        "background-image": "linear-gradient(90deg, #1E1B4B 0%, #312E81 100%)"
+      },
+      "children": [
+        {
+          "elmType": "span",
+          "attributes": {
+            "iconName": "Warning"
+          },
+          "style": {
+            "font-size": "16px",
+            "color": "#FBBF24",
+            "margin-right": "10px"
+          }
+        },
+        {
+          "elmType": "span",
+          "txtContent": "Something urgent that is stopping your team from working?",
+          "style": {
+            "font-size": "13px",
+            "color": "#FFFFFF",
+            "flex-grow": "1",
+            "margin-right": "12px"
+          }
+        },
+        {
+          "elmType": "a",
+          "txtContent": "Email the migration team",
+          "attributes": {
+            "href": "mailto:migration@contoso.com?subject=Urgent%20file%20share%20issue",
+            "target": "_blank"
+          },
+          "style": {
+            "font-size": "12px",
+            "font-weight": "700",
+            "color": "#1E1B4B",
+            "background-color": "#FFFFFF",
+            "padding": "7px 14px",
+            "border-radius": "8px",
+            "text-decoration": "none",
+            "margin": "4px 0"
+          }
+        }
+      ]
+    }
+  ]
+}
