@@ -1,0 +1,678 @@
+# =====================================================================
+#  Platform Health - 1 screen, Source Code schema (pa.yaml v3)
+#
+#  Paste: select "App" at the top of the tree view, Ctrl+V.
+#  Delete or rename any existing scrHealth first.
+#  Fallback: add a blank screen and paste only the Children block.
+#
+#  Prereqs: PowerAutomateManagement connector added, SharePoint list
+#  "HealthChecks" added, flow "HealthCheckFlow" added, 01-App-Formulas pasted.
+# =====================================================================
+Screens:
+
+  scrHealth:
+    Properties:
+      Fill: =clrBg
+    Children:
+      - conPage:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            Fill: =clrBg
+            BorderThickness: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutJustifyContent: =LayoutJustifyContent.Start
+            LayoutGap: =20
+            PaddingLeft: =48
+            PaddingRight: =48
+            PaddingTop: =32
+            PaddingBottom: =32
+          Children:
+
+            # ---------------- Header ----------------
+            - conHeader:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =80
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =16
+                Children:
+                  - conTitle:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =18
+                      Children:
+                        - imgHeartbeat:
+                            Control: Image
+                            Properties:
+                              FillPortions: =0
+                              Width: =56
+                              Height: =56
+                              ImagePosition: =ImagePosition.Fit
+                              Image: =svgHeartbeat
+                        - conTitleText:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =1
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutGap: =2
+                            Children:
+                              - txtTitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =40
+                                    Text: ="Platform health"
+                                    Size: =30
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =clrInk
+                                    Wrap: =false
+                              - txtSubtitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =0
+                                    Height: =22
+                                    Text: ="Live checks against SharePoint and Power Automate"
+                                    Size: =14
+                                    FontColor: =clrMuted
+                                    Wrap: =false
+                  - pillStatus:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Width: =290
+                        Height: =44
+                        AlignInContainer: =AlignInContainer.Center
+                        Fill: |-
+                          =If(varSpState = "fail" || varPaState = "fail", RGBA(209, 67, 75, 0.12),
+                              If(varSpState = "ok" && varPaState = "ok", RGBA(31, 157, 85, 0.12),
+                                 RGBA(0, 102, 255, 0.10)))
+                        BorderThickness: =0
+                        RadiusTopLeft: =22
+                        RadiusTopRight: =22
+                        RadiusBottomLeft: =22
+                        RadiusBottomRight: =22
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =10
+                        PaddingLeft: =18
+                        PaddingRight: =18
+                      Children:
+                        - imgPulse:
+                            Control: Image
+                            Properties:
+                              FillPortions: =0
+                              Width: =16
+                              Height: =16
+                              ImagePosition: =ImagePosition.Fit
+                              Image: |-
+                                ="data:image/svg+xml;utf8," & EncodeUrl(
+                                    Substitute(svgPulse, "{c}",
+                                        If(varSpState = "fail" || varPaState = "fail", "#D1434B",
+                                           If(varSpState = "ok" && varPaState = "ok", "#1F9D55", "#0066FF"))))
+                        - txtStatus:
+                            Control: Text
+                            Properties:
+                              FillPortions: =1
+                              Height: =22
+                              Text: |-
+                                =If(varSpState = "fail" || varPaState = "fail", "Something needs attention",
+                                    If(varSpState = "ok" && varPaState = "ok", "All systems operational",
+                                       If(varSpState = "running" || varPaState = "running", "Checking...", "Ready to check")))
+                              Size: =14
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              FontColor: |-
+                                =If(varSpState = "fail" || varPaState = "fail", clrFail,
+                                    If(varSpState = "ok" && varPaState = "ok", clrOk, clrPa))
+                              VerticalAlign: =VerticalAlign.Middle
+                              Wrap: =false
+
+            # ---------------- Environment card ----------------
+            - conEnv:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =156
+                  Fill: =clrCard
+                  BorderThickness: =0
+                  DropShadow: =DropShadow.Light
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutJustifyContent: =LayoutJustifyContent.Center
+                  LayoutGap: =12
+                  PaddingLeft: =28
+                  PaddingRight: =28
+                  PaddingTop: =22
+                  PaddingBottom: =22
+                Children:
+                  - txtEnvHeading:
+                      Control: Text
+                      Properties:
+                        FillPortions: =0
+                        Height: =24
+                        Text: ="Environment"
+                        Size: =17
+                        Weight: ='TextCanvas.Weight'.Semibold
+                        FontColor: =clrInk
+                        Wrap: =false
+                  - conEnvRow:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: =44
+                        Fill: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =12
+                      Children:
+                        - ddEnv:
+                            Control: Classic/DropDown
+                            Properties:
+                              FillPortions: =0
+                              Width: =420
+                              Height: =44
+                              Items: =Distinct(fxEnvs, EnvName)
+                              Default: =LookUp(fxEnvs, IsDefault).EnvName
+                              Size: =13
+                              Fill: =RGBA(246, 248, 249, 1)
+                              Color: =clrInk
+                              BorderColor: =clrLine
+                              BorderThickness: =1
+                              PaddingLeft: =14
+                              ChevronBackground: =RGBA(246, 248, 249, 1)
+                              ChevronFill: =clrInk
+                              ChevronHoverBackground: =RGBA(236, 240, 242, 1)
+                              ChevronHoverFill: =clrInk
+                              HoverFill: =RGBA(236, 240, 242, 1)
+                              HoverColor: =clrInk
+                              PressedFill: =RGBA(236, 240, 242, 1)
+                              PressedColor: =clrInk
+                              SelectionFill: =clrPa
+                              SelectionColor: =RGBA(255, 255, 255, 1)
+                        - pillType:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =170
+                              Height: =32
+                              AlignInContainer: =AlignInContainer.Center
+                              Fill: =RGBA(0, 102, 255, 0.08)
+                              BorderThickness: =0
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtPillType:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: |-
+                                      ="Type: " & Coalesce(LookUp(fxEnvs, EnvName = ddEnv.Selected.Value).EnvType, "-")
+                                    Size: =12
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =clrPa
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                        - pillState:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =170
+                              Height: =32
+                              AlignInContainer: =AlignInContainer.Center
+                              Fill: |-
+                                =If(LookUp(fxEnvs, EnvName = ddEnv.Selected.Value).EnvState = "Succeeded",
+                                    RGBA(31, 157, 85, 0.10), RGBA(209, 67, 75, 0.10))
+                              BorderThickness: =0
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtPillState:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: |-
+                                      =If(LookUp(fxEnvs, EnvName = ddEnv.Selected.Value).EnvState = "Succeeded",
+                                          "Healthy",
+                                          "State: " & Coalesce(LookUp(fxEnvs, EnvName = ddEnv.Selected.Value).EnvState, "-"))
+                                    Size: =12
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: |-
+                                      =If(LookUp(fxEnvs, EnvName = ddEnv.Selected.Value).EnvState = "Succeeded", clrOk, clrFail)
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                        - pillDefault:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Width: =120
+                              Height: =32
+                              AlignInContainer: =AlignInContainer.Center
+                              Visible: =Coalesce(LookUp(fxEnvs, EnvName = ddEnv.Selected.Value).IsDefault, false)
+                              Fill: =RGBA(27, 42, 51, 0.08)
+                              BorderThickness: =0
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                            Children:
+                              - txtPillDefault:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Text: ="Default"
+                                    Size: =12
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =clrInk
+                                    Align: ='TextCanvas.Align'.Center
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                  - txtEnvCount:
+                      Control: Text
+                      Properties:
+                        FillPortions: =0
+                        Height: =20
+                        Text: =CountRows(fxEnvs) & If(CountRows(fxEnvs) = 1, " environment", " environments") & " visible to your account. Pick one to confirm it responds."
+                        Size: =13
+                        FontColor: =clrMuted
+                        Wrap: =false
+
+            # ---------------- Check cards ----------------
+            - conChecks:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =1
+                  Fill: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutJustifyContent: =LayoutJustifyContent.Start
+                  LayoutGap: =20
+                Children:
+
+                  # ---- SharePoint ----
+                  - conSp:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =clrCard
+                        BorderThickness: =0
+                        DropShadow: =DropShadow.Light
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =16
+                        PaddingLeft: =28
+                        PaddingRight: =28
+                        PaddingTop: =28
+                        PaddingBottom: =28
+                      Children:
+                        - conSpHead:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =44
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =14
+                            Children:
+                              - imgSpGlyph:
+                                  Control: Image
+                                  Properties:
+                                    FillPortions: =0
+                                    Width: =44
+                                    Height: =44
+                                    ImagePosition: =ImagePosition.Fit
+                                    Image: =svgSpGlyph
+                              - txtSpTitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Height: =30
+                                    Text: ="SharePoint"
+                                    Size: =20
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =clrInk
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                        - txtSpDesc:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =44
+                              Text: ="Writes a test item to the HealthChecks list and confirms the write came back."
+                              Size: =14
+                              FontColor: =clrMuted
+                              Wrap: =true
+                        - btnSp:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =260
+                              Height: =44
+                              AlignInContainer: =AlignInContainer.Start
+                              Text: =If(varSpState = "running", "Checking...", "Run SharePoint check")
+                              Appearance: ='ButtonCanvas.Appearance'.Primary
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="ArrowClockwise"
+                              BasePaletteColor: =clrSp
+                              DisplayMode: =If(varSpState = "running", DisplayMode.Disabled, DisplayMode.Edit)
+                              OnSelect: |-
+                                =Set(varSpStart, Now());
+                                Set(varSpState, "running");
+                                Reset(tmrSp);
+                                IfError(
+                                    Patch(
+                                        HealthChecks,
+                                        Defaults(HealthChecks),
+                                        { Title: "Health check by " & User().FullName & " at " & Text(Now(), "yyyy-mm-dd hh:mm:ss") }
+                                    ),
+                                    Set(varSpMsg, "SharePoint write failed: " & FirstError.Message);
+                                    Set(varSpState, "fail"),
+                                    Set(varSpMsg, "SharePoint is up. Test item written in " & DateDiff(varSpStart, Now(), TimeUnit.Milliseconds) & " ms.");
+                                    Set(varSpState, "ok")
+                                );
+                                Set(varSpTime, Now())
+                        - conSpResult:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =64
+                              Visible: =!IsBlank(varSpState)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =14
+                            Children:
+                              - imgSpStatus:
+                                  Control: Image
+                                  Properties:
+                                    FillPortions: =0
+                                    Width: =44
+                                    Height: =44
+                                    ImagePosition: =ImagePosition.Fit
+                                    Image: |-
+                                      =Switch(varSpState,
+                                          "running", "data:image/svg+xml;utf8," & EncodeUrl(Substitute(svgSpinner, "{c}", "#038387")),
+                                          "ok", svgCheck,
+                                          "fail", svgFail)
+                              - conSpResultText:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =1
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutGap: =2
+                                  Children:
+                                    - txtSpMsg:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =40
+                                          Text: =If(varSpState = "running", "Writing a test item to the HealthChecks list...", varSpMsg)
+                                          Size: =15
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: |-
+                                            =If(varSpState = "running", clrMuted,
+                                                If(varSpState = "fail", RGBA(209, 67, 75, Min(1, tmrSp.Value / 450)),
+                                                   RGBA(27, 42, 51, Min(1, tmrSp.Value / 450))))
+                                          Wrap: =true
+                                    - txtSpTime:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =18
+                                          Text: =If(varSpState in ["ok", "fail"], "Checked at " & Text(varSpTime, "h:mm:ss AM/PM"), "")
+                                          Size: =12
+                                          FontColor: =RGBA(97, 112, 122, Min(1, tmrSp.Value / 450))
+                                          Wrap: =false
+
+                  # ---- Power Automate ----
+                  - conPa:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        Fill: =clrCard
+                        BorderThickness: =0
+                        DropShadow: =DropShadow.Light
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutJustifyContent: =LayoutJustifyContent.Start
+                        LayoutGap: =16
+                        PaddingLeft: =28
+                        PaddingRight: =28
+                        PaddingTop: =28
+                        PaddingBottom: =28
+                      Children:
+                        - conPaHead:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =44
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =14
+                            Children:
+                              - imgPaGlyph:
+                                  Control: Image
+                                  Properties:
+                                    FillPortions: =0
+                                    Width: =44
+                                    Height: =44
+                                    ImagePosition: =ImagePosition.Fit
+                                    Image: =svgPaGlyph
+                              - txtPaTitle:
+                                  Control: Text
+                                  Properties:
+                                    FillPortions: =1
+                                    Height: =30
+                                    Text: ="Power Automate"
+                                    Size: =20
+                                    Weight: ='TextCanvas.Weight'.Semibold
+                                    FontColor: =clrInk
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Wrap: =false
+                        - txtPaDesc:
+                            Control: Text
+                            Properties:
+                              FillPortions: =0
+                              Height: =44
+                              Text: ="Triggers HealthCheckFlow and waits for it to reply."
+                              Size: =14
+                              FontColor: =clrMuted
+                              Wrap: =true
+                        - btnPa:
+                            Control: Button
+                            Properties:
+                              FillPortions: =0
+                              Width: =260
+                              Height: =44
+                              AlignInContainer: =AlignInContainer.Start
+                              Text: =If(varPaState = "running", "Checking...", "Run Power Automate check")
+                              Appearance: ='ButtonCanvas.Appearance'.Primary
+                              Layout: ='ButtonCanvas.Layout'.IconBefore
+                              Icon: ="ArrowClockwise"
+                              BasePaletteColor: =clrPa
+                              DisplayMode: =If(varPaState = "running", DisplayMode.Disabled, DisplayMode.Edit)
+                              OnSelect: |-
+                                =Set(varPaStart, Now());
+                                Set(varPaState, "running");
+                                Reset(tmrPa);
+                                IfError(
+                                    Set(varPaResult, HealthCheckFlow.Run()),
+                                    Set(varPaMsg, "Flow call failed: " & FirstError.Message);
+                                    Set(varPaState, "fail"),
+                                    Set(varPaMsg, "Power Automate is up and running. Flow replied '" & varPaResult.status & "' in " & DateDiff(varPaStart, Now(), TimeUnit.Milliseconds) & " ms.");
+                                    Set(varPaState, "ok")
+                                );
+                                Set(varPaTime, Now())
+                        - conPaResult:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              FillPortions: =0
+                              Height: =64
+                              Visible: =!IsBlank(varPaState)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutJustifyContent: =LayoutJustifyContent.Start
+                              LayoutGap: =14
+                            Children:
+                              - imgPaStatus:
+                                  Control: Image
+                                  Properties:
+                                    FillPortions: =0
+                                    Width: =44
+                                    Height: =44
+                                    ImagePosition: =ImagePosition.Fit
+                                    Image: |-
+                                      =Switch(varPaState,
+                                          "running", "data:image/svg+xml;utf8," & EncodeUrl(Substitute(svgSpinner, "{c}", "#0066FF")),
+                                          "ok", svgCheck,
+                                          "fail", svgFail)
+                              - conPaResultText:
+                                  Control: GroupContainer
+                                  Variant: AutoLayout
+                                  Properties:
+                                    FillPortions: =1
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutGap: =2
+                                  Children:
+                                    - txtPaMsg:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =40
+                                          Text: =If(varPaState = "running", "Waiting for the flow to respond...", varPaMsg)
+                                          Size: =15
+                                          Weight: ='TextCanvas.Weight'.Semibold
+                                          FontColor: |-
+                                            =If(varPaState = "running", clrMuted,
+                                                If(varPaState = "fail", RGBA(209, 67, 75, Min(1, tmrPa.Value / 450)),
+                                                   RGBA(27, 42, 51, Min(1, tmrPa.Value / 450))))
+                                          Wrap: =true
+                                    - txtPaTime:
+                                        Control: Text
+                                        Properties:
+                                          FillPortions: =0
+                                          Height: =18
+                                          Text: =If(varPaState in ["ok", "fail"], "Checked at " & Text(varPaTime, "h:mm:ss AM/PM"), "")
+                                          Size: =12
+                                          FontColor: =RGBA(97, 112, 122, Min(1, tmrPa.Value / 450))
+                                          Wrap: =false
+
+      # ---------------- Reveal timers (1x1, visible so they tick) ----------------
+      - tmrSp:
+          Control: Timer
+          Properties:
+            X: =Parent.Width - 2
+            Y: =Parent.Height - 2
+            Width: =1
+            Height: =1
+            Duration: =450
+            Repeat: =false
+            AutoStart: =false
+            Start: =varSpState in ["ok", "fail"]
+            Visible: =true
+            Text: =""
+            Fill: =RGBA(0, 0, 0, 0)
+            Color: =RGBA(0, 0, 0, 0)
+            BorderThickness: =0
+      - tmrPa:
+          Control: Timer
+          Properties:
+            X: =Parent.Width - 4
+            Y: =Parent.Height - 2
+            Width: =1
+            Height: =1
+            Duration: =450
+            Repeat: =false
+            AutoStart: =false
+            Start: =varPaState in ["ok", "fail"]
+            Visible: =true
+            Text: =""
+            Fill: =RGBA(0, 0, 0, 0)
+            Color: =RGBA(0, 0, 0, 0)
+            BorderThickness: =0
