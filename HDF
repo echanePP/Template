@@ -1,0 +1,29 @@
+// ---------- Theme ----------
+nfPrimary = ColorValue("#0B6BCB");
+nfPrimarySoft = ColorValue("#E6F0FB");
+nfInk = ColorValue("#10233A");
+nfMuted = ColorValue("#5B6B7C");
+nfBorder = ColorValue("#DCE3EA");
+nfPageBg = ColorValue("#F3F6F9");
+nfWhite = ColorValue("#FFFFFF");
+nfSuccess = ColorValue("#15803D");
+nfSuccessSoft = ColorValue("#E7F5EC");
+nfWarn = ColorValue("#B45309");
+nfWarnSoft = ColorValue("#FDF1E3");
+nfDanger = ColorValue("#B91C1C");
+
+// ---------- Layout ----------
+nfNarrow = App.Width < 900;
+
+// ---------- Size column: unit shown and divisor applied to Value(Size) ----------
+// If Size is stored in MB and you want GB: nfSizeUnit = "GB"; nfSizeDivisor = 1024;
+nfSizeUnit = "GB";
+nfSizeDivisor = 1;
+
+// ---------- Access (lowercase emails) ----------
+nfMe = Lower(User().Email);
+nfAdmins = ["admin1@contoso.com", "admin2@contoso.com"];
+nfIsAdmin = nfMe in nfAdmins;
+
+// ---------- Wave master switch ----------
+nfShowAllWaves = Coalesce(LookUp(HomeDriveWaveSettings, WaveNumber = "ALL").IsActive, false);
